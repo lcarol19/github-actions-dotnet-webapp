@@ -1,0 +1,52 @@
+name: Build and Deploy .NET WebApp
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 * * * *'  # Executa a cada hora
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # Substitua pela versão necessária
+
+      - name: Restaurar dependências
+        run: dotnet restore
+
+      - name: Construir a aplicação
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Executar testes
+        run: dotnet test --configuration Release --no-restore
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publicar a aplicação
+        run: dotnet publish -c Release -o out
+
+      - name: Deploy personalizado (Exemplo de script)
+        run: |
+          echo "Iniciando deploy..."
+          # Adicione comandos específicos para o seu ambiente de hospedagem
+          echo "Deploy concluído!"
